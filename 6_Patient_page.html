@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4faff; /* Soft light blue background */
+            color: #333;
+        }
+
+        header {
+            background-color: #4c88d6; /* Calm blue for the header */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+
+        section {
+            margin: 20px;
+            text-align: center;
+        }
+
+        .btn-container {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #4c88d6; /* Blue button */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px; /* Rounded buttons */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Button shadow for depth */
+            transition: all 0.3s ease; /* Smooth transition effect */
+        }
+
+        .btn:hover {
+            background-color: #3576c4; /* Slightly darker on hover */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            margin: 30px auto;
+            border-radius: 10px; /* Rounded table corners */
+            overflow: hidden; /* Ensures corners stay rounded */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Adds depth */
+        }
+
+        table, th, td {
+            border: 1px solid #dddddd;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            background-color: white;
+        }
+
+        th {
+            background-color: #4c88d6;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Subtle alternating row color */
+        }
+
+        form {
+            margin: 30px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 10px;
+            display: none; /* Initially hide the form */
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #4c88d6; /* Highlight on focus */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .submit-btn {
+            background-color: #28a745; /* Green submit button */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.95); /* Pressed effect */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Patient Management System
+    </header>
+
+    <section>
+        <!-- Button Container -->
+        <section class="btn-container">
+            <button class="btn" onclick="openAddPatientForm()">Add Patient</button>
+            <button class="btn" onclick="viewPatientRecords()">View Patients</button>
+        </section>
+
+        <!-- Table to show patient data -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Condition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="patient-table">
+                <!-- Patient rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Patient Form for Adding/Editing Patients -->
+        <form id="patient-form">
+            <fieldset class="form-group">
+                <label for="patientName">Name:</label>
+                <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="patientAge">Age:</label>
+                <input type="number" id="patientAge" name="patientAge" placeholder="Enter patient's age">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="patientGender">Gender:</label>
+                <select id="patientGender" name="patientGender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="patientCondition">Condition (Bullet points):</label>
+                <textarea id="patientCondition" name="patientCondition" placeholder="Enter patient's condition, use bullet points by pressing Enter"></textarea>
+            </fieldset>
+            <button type="button" class="submit-btn" onclick="savePatient()">Submit</button>
+        </form>
+    </section>
+
+    <script>
+        // Function to display the form
+        function openAddPatientForm() {
+            document.getElementById('patient-form').style.display = 'block';
+        }
+
+        // Function to simulate saving patient data
+        function savePatient() {
+            const name = document.getElementById('patientName').value;
+            const age = document.getElementById('patientAge').value;
+            const gender = document.getElementById('patientGender').value;
+            const condition = document.getElementById('patientCondition').value;
+
+            const table = document.getElementById('patient-table');
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>${table.rows.length}</td>
+                <td>${name}</td>
+                <td>${age}</td>
+                <td>${gender}</td>
+                <td><ul>${condition.split('\n').map(item => `<li>${item}</li>`).join('')}</ul></td>
+                <td><button class="btn" onclick="editPatient(this)">Edit</button> <button class="btn" onclick="deletePatient(this)">Delete</button></td>
+            `;
+
+            // Reset the form
+            document.getElementById('patient-form').reset();
+            document.getElementById('patient-form').style.display = 'none';
+        }
+
+        // Function to simulate editing a patient
+        function editPatient(btn) {
+            const row = btn.parentElement.parentElement;
+            document.getElementById('patientName').value = row.cells[1].innerText;
+            document.getElementById('patientAge').value = row.cells[2].innerText;
+            document.getElementById('patientGender').value = row.cells[3].innerText;
+            const conditionItems = Array.from(row.cells[4].getElementsByTagName('li')).map(item => item.innerText).join('\n');
+            document.getElementById('patientCondition').value = conditionItems;
+            document.getElementById('patient-form').style.display = 'block';
+
+            // Remove the row being edited
+            row.remove();
+        }
+
+        // Function to simulate deleting a patient
+        function deletePatient(btn) {
+            const row = btn.parentElement.parentElement;
+            row.remove();
+        }
+
+        // Dummy function for 'View Patients' button
+        function viewPatientRecords() {
+            alert('Patient records functionality can be implemented here.');
+        }
+    </script>
+
+</body>
+</html>

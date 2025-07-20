@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Records Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        /* Left side - Add Record Form */
+        .record-form {
+            width: 45%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .record-form h2 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .record-form label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #0077b6;
+        }
+
+        .record-form input, .record-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: border 0.3s ease;
+        }
+
+        .record-form input:focus, .record-form textarea:focus {
+            border-color: #0077b6;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        /* Right side - Record List */
+        .record-list {
+            width: 45%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .record-list h3 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa; /* Light blue highlight on hover */
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .summary span {
+            color: #0077b6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Medical Records Management System
+</header>
+
+<section class="container">
+    <!-- Left side - Add Record Form -->
+    <form class="record-form" id="recordForm">
+        <h2>Add Medical Record</h2>
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name" required>
+        </div>
+        <div class="form-group">
+            <label for="medicalCondition">Medical Condition:</label>
+            <input type="text" id="medicalCondition" name="medicalCondition" placeholder="Enter medical condition" required>
+        </div>
+        <div class="form-group">
+            <label for="medications">Medications:</label>
+            <textarea id="medications" name="medications" rows="4" placeholder="Enter medications" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="date">Date of Record:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+        <button type="submit" class="submit-btn">Add Record</button>
+    </form>
+
+    <!-- Right side - Record List -->
+    <div class="record-list" id="recordList">
+        <h3>Current Medical Records</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Medical Condition</th>
+                    <th>Medications</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="recordTableBody">
+                <!-- Medical records will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="summary" id="summary">
+            Total Records: <span id="totalRecords">0</span>
+        </div>
+    </div>
+</section>
+
+<script>
+    const recordForm = document.getElementById('recordForm');
+    const recordTableBody = document.getElementById('recordTableBody');
+    const totalRecords = document.getElementById('totalRecords');
+
+    let records = [];
+
+    recordForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const patientName = document.getElementById('patientName').value;
+        const medicalCondition = document.getElementById('medicalCondition').value;
+        const medications = document.getElementById('medications').value;
+        const date = document.getElementById('date').value;
+
+        // Create record object
+        const record = {
+            patientName: patientName,
+            medicalCondition: medicalCondition,
+            medications: medications,
+            date: date
+        };
+
+        // Add record to records array
+        records.push(record);
+
+        // Add record to table
+        addRecordToTable(record);
+
+        // Update summary
+        updateSummary();
+
+        // Clear the form
+        recordForm.reset();
+    });
+
+    function addRecordToTable(record) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${record.patientName}</td>
+            <td>${record.medicalCondition}</td>
+            <td>${record.medications}</td>
+            <td>${new Date(record.date).toLocaleDateString()}</td>
+        `;
+        recordTableBody.appendChild(row);
+    }
+
+    function updateSummary() {
+        totalRecords.textContent = records.length;
+    }
+</script>
+
+</body>
+</html>

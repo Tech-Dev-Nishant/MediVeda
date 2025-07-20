@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        /* Left side - Add Medication Form */
+        .medication-form {
+            width: 45%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .medication-form h2 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .medication-form label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #0077b6;
+        }
+
+        .medication-form input, .medication-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: border 0.3s ease;
+        }
+
+        .medication-form input:focus, .medication-form textarea:focus {
+            border-color: #0077b6;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        /* Right side - Medication List */
+        .medication-list {
+            width: 45%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .medication-list h3 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa; /* Light blue highlight on hover */
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .summary span {
+            color: #0077b6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Pharmacy Management System
+</header>
+
+<section class="container">
+    <!-- Left side - Add Medication Form -->
+    <form class="medication-form" id="medicationForm">
+        <h2>Add Medication</h2>
+        <div class="form-group">
+            <label for="medicationName">Medication Name:</label>
+            <input type="text" id="medicationName" name="medicationName" placeholder="Enter medication name" required>
+        </div>
+        <div class="form-group">
+            <label for="dosage">Dosage:</label>
+            <input type="text" id="dosage" name="dosage" placeholder="Enter dosage" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="Enter quantity" required>
+        </div>
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="date" id="expiryDate" name="expiryDate" required>
+        </div>
+        <button type="submit" class="submit-btn">Add Medication</button>
+    </form>
+
+    <!-- Right side - Medication List -->
+    <div class="medication-list" id="medicationList">
+        <h3>Current Medications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Medication Name</th>
+                    <th>Dosage</th>
+                    <th>Quantity</th>
+                    <th>Expiry Date</th>
+                </tr>
+            </thead>
+            <tbody id="medicationTableBody">
+                <!-- Medications will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="summary" id="summary">
+            Total Medications: <span id="totalMedications">0</span>
+        </div>
+    </div>
+</section>
+
+<script>
+    const medicationForm = document.getElementById('medicationForm');
+    const medicationTableBody = document.getElementById('medicationTableBody');
+    const totalMedications = document.getElementById('totalMedications');
+
+    let medications = [];
+
+    medicationForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const medicationName = document.getElementById('medicationName').value;
+        const dosage = document.getElementById('dosage').value;
+        const quantity = document.getElementById('quantity').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+
+        // Create medication object
+        const medication = {
+            medicationName: medicationName,
+            dosage: dosage,
+            quantity: quantity,
+            expiryDate: expiryDate
+        };
+
+        // Add medication to medications array
+        medications.push(medication);
+
+        // Add medication to table
+        addMedicationToTable(medication);
+
+        // Update summary
+        updateSummary();
+
+        // Clear the form
+        medicationForm.reset();
+    });
+
+    function addMedicationToTable(medication) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${medication.medicationName}</td>
+            <td>${medication.dosage}</td>
+            <td>${medication.quantity}</td>
+            <td>${new Date(medication.expiryDate).toLocaleDateString()}</td>
+        `;
+        medicationTableBody.appendChild(row);
+    }
+
+    function updateSummary() {
+        totalMedications.textContent = medications.length;
+    }
+</script>
+
+</body>
+</html>

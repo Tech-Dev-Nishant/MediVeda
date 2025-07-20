@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        /* Left side - Add Bill Form */
+        .billing-form {
+            width: 45%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .billing-form h2 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .billing-form label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #0077b6;
+        }
+
+        .billing-form input, .billing-form select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: border 0.3s ease;
+        }
+
+        .billing-form input:focus, .billing-form select:focus {
+            border-color: #0077b6;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        /* Right side - Bill List */
+        .bill-list {
+            width: 45%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .bill-list h3 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa; /* Light blue highlight on hover */
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .summary span {
+            color: #0077b6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Billing Management System
+</header>
+
+<section class="container">
+    <!-- Left side - Add Bill Form -->
+    <form class="billing-form" id="billingForm">
+        <h2>Add Bill</h2>
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" id="patientName" name="patientName" placeholder="Enter patient's name" required>
+        </div>
+        <div class="form-group">
+            <label for="billAmount">Bill Amount:</label>
+            <input type="number" id="billAmount" name="billAmount" placeholder="Enter bill amount" required>
+        </div>
+        <div class="form-group">
+            <label for="paymentStatus">Payment Status:</label>
+            <select id="paymentStatus" name="paymentStatus" required>
+                <option value="" disabled selected>Select Payment Status</option>
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+        <button type="submit" class="submit-btn">Add Bill</button>
+    </form>
+
+    <!-- Right side - Bill List -->
+    <div class="bill-list" id="billList">
+        <h3>Current Bills</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Bill Amount</th>
+                    <th>Payment Status</th>
+                </tr>
+            </thead>
+            <tbody id="billTableBody">
+                <!-- Bill records will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="summary" id="summary">
+            Total Bills: <span id="totalBills">0</span>
+            <br>
+            Total Amount: <span id="totalAmount">0</span>
+        </div>
+    </div>
+</section>
+
+<script>
+    const billingForm = document.getElementById('billingForm');
+    const billTableBody = document.getElementById('billTableBody');
+    const totalBills = document.getElementById('totalBills');
+    const totalAmount = document.getElementById('totalAmount');
+
+    let bills = [];
+
+    billingForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const patientName = document.getElementById('patientName').value;
+        const billAmount = parseFloat(document.getElementById('billAmount').value);
+        const paymentStatus = document.getElementById('paymentStatus').value;
+
+        // Create bill object
+        const bill = {
+            patientName: patientName,
+            billAmount: billAmount,
+            paymentStatus: paymentStatus
+        };
+
+        // Add bill to bills array
+        bills.push(bill);
+
+        // Add bill to table
+        addBillToTable(bill);
+
+        // Update summary
+        updateSummary();
+
+        // Clear the form
+        billingForm.reset();
+    });
+
+    function addBillToTable(bill) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${bill.patientName}</td>
+            <td>${bill.billAmount.toFixed(2)}</td>
+            <td>${bill.paymentStatus}</td>
+        `;
+        billTableBody.appendChild(row);
+    }
+
+    function updateSummary() {
+        totalBills.textContent = bills.length;
+        const total = bills.reduce((sum, bill) => sum + bill.billAmount, 0);
+        totalAmount.textContent = total.toFixed(2);
+    }
+</script>
+
+</body>
+</html>

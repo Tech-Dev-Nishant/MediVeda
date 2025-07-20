@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduling</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6; /* Calming blue header */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .appointment-form {
+            margin: 40px auto;
+            padding: 30px;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .appointment-form:hover {
+            transform: translateY(-5px); /* Interactive hover effect */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+        }
+
+        .appointment-form h2 {
+            color: #0077b6;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0077b6;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            box-sizing: border-box;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0077b6;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.95);
+        }
+
+        .interactive-message {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0077b6;
+            animation: fadeIn 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0.2;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Appointment Scheduling
+    </header>
+
+    <section class="appointment-form">
+        <h2>Book Your Appointment</h2>
+        <form action="submit-appointment" method="post">
+            <fieldset class="form-group">
+                <label for="patientName">Patient Name:</label>
+                <input type="text" id="patientName" name="patientName" placeholder="Enter your name" required>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="appointmentDate">Appointment Date:</label>
+                <input type="date" id="appointmentDate" name="appointmentDate" required>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="appointmentTime">Appointment Time:</label>
+                <input type="time" id="appointmentTime" name="appointmentTime" required>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="doctor">Select Doctor:</label>
+                <select id="doctor" name="doctor" required>
+                    <option value="" disabled selected>Select a Doctor</option>
+                    <option value="Dr. Smith">Dr. Smith</option>
+                    <option value="Dr. Johnson">Dr. Johnson</option>
+                    <option value="Dr. Patel">Dr. Patel</option>
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="comments">Reason for Appointment:</label>
+                <textarea id="comments" name="comments" placeholder="Provide details about your visit"></textarea>
+            </fieldset>
+            <button type="submit" class="submit-btn">Schedule Now</button>
+        </form>
+
+        <!-- Interactive Message -->
+        <p class="interactive-message">We look forward to seeing you soon!</p>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        /* Left side - Add Staff Form */
+        .staff-form {
+            width: 45%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .staff-form h2 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .staff-form label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #0077b6;
+        }
+
+        .staff-form input, .staff-form select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: border 0.3s ease;
+        }
+
+        .staff-form input:focus, .staff-form select:focus {
+            border-color: #0077b6;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        /* Right side - Staff List */
+        .staff-list {
+            width: 45%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .staff-list h3 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa; /* Light blue highlight on hover */
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .summary span {
+            color: #0077b6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Staff Management System
+</header>
+
+<section class="container">
+    <!-- Left side - Add Staff Form -->
+    <form class="staff-form" id="staffForm">
+        <h2>Add Staff Member</h2>
+        <div class="form-group">
+            <label for="staffName">Name:</label>
+            <input type="text" id="staffName" name="staffName" placeholder="Enter staff name" required>
+        </div>
+        <div class="form-group">
+            <label for="staffRole">Role:</label>
+            <select id="staffRole" name="staffRole" required>
+                <option value="" disabled selected>Select a role</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Admin">Admin</option>
+                <option value="Technician">Technician</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="staffEmail">Email:</label>
+            <input type="email" id="staffEmail" name="staffEmail" placeholder="Enter staff email" required>
+        </div>
+        <button type="submit" class="submit-btn">Add Staff</button>
+    </form>
+
+    <!-- Right side - Staff List -->
+    <div class="staff-list" id="staffList">
+        <h3>Current Staff Members</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="staffTableBody">
+                <!-- Staff members will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="summary" id="summary">
+            Total Staff Members: <span id="totalStaff">0</span>
+        </div>
+    </div>
+</section>
+
+<script>
+    const staffForm = document.getElementById('staffForm');
+    const staffTableBody = document.getElementById('staffTableBody');
+    const totalStaff = document.getElementById('totalStaff');
+
+    let staffMembers = [];
+
+    staffForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const staffName = document.getElementById('staffName').value;
+        const staffRole = document.getElementById('staffRole').value;
+        const staffEmail = document.getElementById('staffEmail').value;
+
+        // Create staff member object
+        const staffMember = {
+            staffName: staffName,
+            staffRole: staffRole,
+            staffEmail: staffEmail
+        };
+
+        // Add staff member to staffMembers array
+        staffMembers.push(staffMember);
+
+        // Add staff member to table
+        addStaffToTable(staffMember);
+
+        // Update summary
+        updateSummary();
+
+        // Clear the form
+        staffForm.reset();
+    });
+
+    function addStaffToTable(staffMember) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${staffMember.staffName}</td>
+            <td>${staffMember.staffRole}</td>
+            <td>${staffMember.staffEmail}</td>
+        `;
+        staffTableBody.appendChild(row);
+    }
+
+    function updateSummary() {
+        totalStaff.textContent = staffMembers.length;
+    }
+</script>
+
+</body>
+</html>

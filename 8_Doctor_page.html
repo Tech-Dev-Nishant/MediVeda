@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management and Profile</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        /* Left side - list of doctor profiles */
+        .doctor-list {
+            width: 45%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 80vh;
+            overflow-y: auto;
+        }
+
+        .doctor-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .doctor-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .doctor-item img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doctor-info h4 {
+            margin: 0;
+            font-size: 20px;
+            color: #0077b6;
+        }
+
+        .doctor-info span {
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Right side - add new doctor */
+        .management-card {
+            width: 45%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .management-card h2 {
+            text-align: center;
+            color: #0077b6;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .management-card label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #0077b6;
+        }
+
+        .management-card input, .management-card select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: border 0.3s ease;
+        }
+
+        .management-card input:focus, .management-card select:focus {
+            border-color: #0077b6;
+        }
+
+        .submit-btn {
+            background-color: #0077b6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #005f8b;
+        }
+
+        /* Fullscreen Profile Card */
+        .profile-card {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: white;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .profile-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #0077b6;
+            margin-bottom: 20px;
+        }
+
+        .profile-card h2 {
+            color: #0077b6;
+            margin-bottom: 10px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .doctor-info-full {
+            list-style-type: none;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        .doctor-info-full li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .doctor-info-full li:last-child {
+            border-bottom: none;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #0077b6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Doctor Management and Profile
+    </header>
+
+    <section class="container">
+        <!-- Left side - List of doctors -->
+        <div class="doctor-list" id="doctorList">
+            <!-- New doctors will be dynamically added here -->
+        </div>
+
+        <!-- Right side - Add new doctor form -->
+        <section class="management-card">
+            <h2>Add New Doctor</h2>
+            <form id="doctorForm">
+                <fieldset class="form-group">
+                    <label for="doctorName">Doctor Name:</label>
+                    <input type="text" id="doctorName" name="doctorName" placeholder="Enter doctor's name" required>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="specialization">Specialization:</label>
+                    <select id="specialization" name="specialization" required>
+                        <option value="" disabled selected>Select Specialization</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                    </select>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="experience">Experience (in years):</label>
+                    <input type="number" id="experience" name="experience" placeholder="Enter years of experience" required>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter doctor's email" required>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter doctor's phone number" required>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="profilePicture">Profile Picture:</label>
+                    <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
+                </fieldset>
+                <button type="submit" class="submit-btn">Add Doctor</button>
+            </form>
+        </section>
+    </section>
+
+    <!-- Fullscreen profile card -->
+    <div class="profile-card" id="profileCard">
+        <img id="profileImage" src="" alt="Doctor Picture">
+        <h2 id="profileName"></h2>
+        <ul class="doctor-info-full" id="profileInfo">
+            <li id="profileSpecialization"></li>
+            <li id="profileExperience"></li>
+            <li id="profileEmail"></li>
+            <li id="profilePhone"></li>
+        </ul>
+        <button class="back-btn" id="backBtn">Back</button>
+    </div>
+
+    <script>
+        // DOM elements
+        const doctorForm = document.getElementById('doctorForm');
+        const doctorList = document.getElementById('doctorList');
+        const profileCard = document.getElementById('profileCard');
+        const backBtn = document.getElementById('backBtn');
+
+        // Profile card details
+        const profileImage = document.getElementById('profileImage');
+        const profileName = document.getElementById('profileName');
+        const profileSpecialization = document.getElementById('profileSpecialization');
+        const profileExperience = document.getElementById('profileExperience');
+        const profileEmail = document.getElementById('profileEmail');
+        const profilePhone = document.getElementById('profilePhone');
+
+        // Form submit event listener
+        doctorForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const doctorName = document.getElementById('doctorName').value;
+            const specialization = document.getElementById('specialization').value;
+            const experience = document.getElementById('experience').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const profilePicture = document.getElementById('profilePicture').files[0]; // Get the uploaded profile picture
+
+            // Convert uploaded file to data URL
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const profilePicURL = e.target.result;
+
+                // Create doctor flash in the list
+                const doctorItem = document.createElement('div');
+                doctorItem.classList.add('doctor-item');
+                doctorItem.innerHTML = `
+                    <img src="${profilePicURL}" alt="Doctor Picture">
+                    <div class="doctor-info">
+                        <h4>${doctorName}</h4>
+                        <span>${specialization}</span>
+                    </div>
+                `;
+                doctorList.appendChild(doctorItem);
+
+                // Add click event to view doctor profile
+                doctorItem.addEventListener('click', function() {
+                    profileImage.src = profilePicURL;
+                    profileName.textContent = doctorName;
+                    profileSpecialization.textContent = `Specialization: ${specialization}`;
+                    profileExperience.textContent = `Experience: ${experience} Years`;
+                    profileEmail.textContent = `Email: ${email}`;
+                    profilePhone.textContent = `Phone: ${phone}`;
+                    profileCard.style.display = 'flex';
+                });
+            };
+            reader.readAsDataURL(profilePicture); // Read the uploaded picture as data URL
+
+            // Clear the form
+            doctorForm.reset();
+        });
+
+        // Close profile card
+        backBtn.addEventListener('click', function() {
+            profileCard.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
