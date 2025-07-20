@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions Dialog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .modal {
+            display: block;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            color: #0056b3;
+            text-align: center;
+        }
+
+        .modal-body {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .modal-footer input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .modal-footer button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Modal Structure -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            Terms and Conditions
+        </div>
+        <div class="modal-body">
+            <p><strong>Last Updated: [Date]</strong></p>
+            <p>Welcome to the [Hospital Management System Name] (hereafter referred to as "the System"). By accessing or using our System, you agree to comply with and be bound by the following terms and conditions. Please read these terms carefully before using the System.</p>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using the System, you confirm that you accept these Terms and Conditions in full. If you do not agree to these terms, you must not use the System.</p>
+
+            <h2>2. Definitions</h2>
+            <p>
+                <strong>User:</strong> Any individual or entity that accesses or uses the System.<br>
+                <strong>System:</strong> Refers to the Hospital Management System, including all associated services, software, and tools.
+            </p>
+
+            <!-- Add more sections as needed -->
+
+        </div>
+        <div class="modal-footer">
+            <input type="checkbox" id="acceptTerms" />
+            <label for="acceptTerms">I agree to the Terms and Conditions</label><br>
+            <button id="acceptButton" disabled>Accept & Continue</button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for functionality -->
+<script>
+    var acceptButton = document.getElementById('acceptButton');
+    var acceptTermsCheckbox = document.getElementById('acceptTerms');
+
+    // Enable/disable the "Accept" button based on checkbox
+    acceptTermsCheckbox.onchange = function() {
+        acceptButton.disabled = !acceptTermsCheckbox.checked;
+    }
+
+    // Redirect to another page when Accept is clicked
+    acceptButton.onclick = function() {
+        if (acceptTermsCheckbox.checked) {
+            window.location.href = "1_Load_page.html"; // Replace with actual URL or page
+        }
+    }
+</script>
+
+</body>
+</html>
