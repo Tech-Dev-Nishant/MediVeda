@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #cfd6f0;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-message {
+            color: blue;
+            font-size: 36px;
+            text-align: center;
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            white-space: nowrap; 
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="images/welcomehos.jpeg " alt="Hospital Logo"> 
+
+    <div class="welcome-message" id="welcomeMessage"></div>
+
+    <script>
+        const message = "Welcome to the Hospital Management System!";
+        let index = 0;
+        const typingSpeed = 80; 
+        const welcomeMessageElement = document.getElementById("welcomeMessage");
+
+        function typeMessage() {
+            if (index < message.length) {
+                welcomeMessageElement.innerHTML += message.charAt(index);
+                index++;
+                setTimeout(typeMessage, typingSpeed);
+            } else {
+                setTimeout(function() {
+                    window.location.href = '4_menu_page.html';
+                }, 1000);
+            }
+        }
+        typeMessage();
+    </script>
+
+</body>
+</html>
